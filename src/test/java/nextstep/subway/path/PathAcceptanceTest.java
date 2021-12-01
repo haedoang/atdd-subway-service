@@ -43,6 +43,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private StationResponse 양재시민의숲역;
     private StationResponse 역삼역;
+
     @BeforeEach
     public void setUp() {
         super.setUp();
