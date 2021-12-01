@@ -20,25 +20,18 @@ import java.util.List;
 @Component
 public class ShortestPathProvider {
 
-    public void getDijkstraShortestPath(List<Station> stations, List<Line> lines, Station src, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    public PathResponse getDijkstraShortestPath(List<Station> stations, List<Line> lines, Station src, Station target) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-        // 정점 등록하기
         stations.stream().forEach(graph::addVertex);
 
-        // 간선 등록하기
-
-        lines.stream().forEach(line -> {
-            line.getSections().stream().forEach(section ->
-                graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance())
-            );
-        });
+        lines.stream()
+                .forEach(line -> line.getSections().stream()
+                        .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance())));
 
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         List<Station> shortestPath = dijkstraShortestPath.getPath(src, target).getVertexList();
 
-        System.out.println(shortestPath);
-
+        return PathResponse.of(shortestPath);
     }
 }

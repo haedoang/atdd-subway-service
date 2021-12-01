@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
@@ -34,9 +33,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    
+
     private static final String BASE_URI = "paths";
-    
+
     private static final int 신분당선_거리_12 = 12;
     private static final int 이호선_거리_2 = 2;
     private static final int 삼호선_거리_3 = 3;
@@ -65,16 +64,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         LineResponse 이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 역삼역.getId(), 강남역.getId(), 이호선_거리_2)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(이호선, 강남역, 교대역, 이호선_거리_2);
 
-        //3호선 매봉역 - 양재역 - 교대역  (각 구간의 거리 3)
-        LineResponse 삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 매봉역.getId(), 양재역.getId(), 삼호선_거리_3)).as(LineResponse.class);
-        지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 남부터미널역, 삼호선_거리_3);
+        //3호선 양재역 - 매봉역 - 남부터미널역 - 교대역  (각 구간의 거리 3)
+        LineResponse 삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 양재역.getId(), 매봉역.getId(), 삼호선_거리_3)).as(LineResponse.class);
+        지하철_노선에_지하철역_등록_요청(삼호선, 매봉역, 남부터미널역, 삼호선_거리_3);
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 교대역, 삼호선_거리_3);
     }
 
     @Test
     @DisplayName("매봉역에서_교대역까지_최단경로_구하기")
-    void test() {
-
+    void getShortestPath() {
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -86,7 +84,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        ///response.jsonPath().getList(".", PathResponse.class);
+        PathResponse pathResponse = response.jsonPath().getObject("", PathResponse.class);
+        assertThat(pathResponse.getStations()).hasSize(7);
 
 
     }

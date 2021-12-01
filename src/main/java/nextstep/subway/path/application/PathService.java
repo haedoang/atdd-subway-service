@@ -36,14 +36,13 @@ public class PathService {
     public PathResponse getShortestPath(Long srcStationId, Long destStationId) {
         //전체 역 조회
         List<Station> stations = this.stations.findAll();
+
         //전체 노선 조회
         List<Line> lines = this.lines.findAll();
 
         Station srcStation = stations.stream().filter(it -> it.getId().equals(srcStationId)).findFirst().orElseThrow(NoSuchElementException::new);
         Station destStation = stations.stream().filter(it -> it.getId().equals(destStationId)).findFirst().orElseThrow(NoSuchElementException::new);
-        provider.getDijkstraShortestPath(stations, lines, srcStation, destStation);
 
-        return null;
-
+        return provider.getDijkstraShortestPath(stations, lines, srcStation, destStation);
     }
 }
