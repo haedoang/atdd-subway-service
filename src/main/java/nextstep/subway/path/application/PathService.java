@@ -2,10 +2,10 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.PathResponse;
-import nextstep.subway.path.ShortestPathProvider;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.domain.Stations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,9 +40,17 @@ public class PathService {
         //전체 노선 조회
         List<Line> lines = this.lines.findAll();
 
-        Station srcStation = stations.stream().filter(it -> it.getId().equals(srcStationId)).findFirst().orElseThrow(NoSuchElementException::new);
-        Station destStation = stations.stream().filter(it -> it.getId().equals(destStationId)).findFirst().orElseThrow(NoSuchElementException::new);
+        Station srcStation = findStation(stations, srcStationId);
 
-        return provider.getDijkstraShortestPath(stations, lines, srcStation, destStation);
+        Station destStation = findStation(stations, destStationId);
+
+        return PathResponse.of(provider.getDijkstraShortestPath(stations, lines, srcStation, destStation));
+    }
+
+    private Station findStation(List<Station> stations, Long stationId) {
+        return stations.stream()
+                .filter(it -> it.getId().equals(stationId))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
     }
 }

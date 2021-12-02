@@ -67,6 +67,4 @@ public class LineService {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
     }
-
-
 }

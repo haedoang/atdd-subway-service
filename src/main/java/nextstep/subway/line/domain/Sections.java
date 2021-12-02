@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -26,10 +27,13 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
+    @Transient
+    private Stations stations = getStations();
+
     public void add(Line line, Station upStation, Station downStation, int distance) {
         addValidate(upStation, downStation);
 
-        if (getStations().isEmpty()) {
+        if (stations.isEmpty()) {
             sections.add(new Section(line, upStation, downStation, distance));
             return;
         }
@@ -65,11 +69,11 @@ public class Sections {
     }
 
     private boolean isExistStation(Station station) {
-        return getStations().stream().anyMatch(it -> it.equals(station));
+        return stations.isExist(station);
     }
 
     private boolean isInvalidStations(Station upStation, Station downStation) {
-        return !getStations().isEmpty() && !isExistStation(upStation) && !isExistStation(downStation);
+        return !stations.isEmpty() && !isExistStation(upStation) && !isExistStation(downStation);
     }
 
     public void remove(Line line, Long stationId) {
@@ -94,7 +98,7 @@ public class Sections {
             throw new RuntimeException();
         }
 
-        if (getStations().stream().noneMatch(station -> station.getId().equals(stationId))) {
+        if (stations.isExist(stationId)) {
             throw new RuntimeException();
         }
     }
@@ -115,9 +119,9 @@ public class Sections {
         return sections;
     }
 
-    public List<Station> getStations() {
+    public Stations getStations() {
         if (sections.isEmpty()) {
-            return Collections.emptyList();
+            return Stations.of(Collections.emptyList());
         }
 
         List<Station> stations = new ArrayList<>();
@@ -134,7 +138,7 @@ public class Sections {
             stations.add(downStation);
         }
 
-        return stations;
+        return Stations.of(stations);
     }
 
     private Station findUpStation() {

@@ -1,8 +1,9 @@
-package nextstep.subway.path;
+package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -20,7 +21,7 @@ import java.util.List;
 @Component
 public class ShortestPathProvider {
 
-    public PathResponse getDijkstraShortestPath(List<Station> stations, List<Line> lines, Station src, Station target) {
+    public Stations getDijkstraShortestPath(List<Station> stations, List<Line> lines, Station src, Station target) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         stations.stream().forEach(graph::addVertex);
@@ -32,6 +33,6 @@ public class ShortestPathProvider {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         List<Station> shortestPath = dijkstraShortestPath.getPath(src, target).getVertexList();
 
-        return PathResponse.of(shortestPath);
+        return Stations.of(shortestPath);
     }
 }

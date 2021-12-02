@@ -1,6 +1,6 @@
 package nextstep.subway.path.ui;
 
-import nextstep.subway.path.PathResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.application.PathService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,5 +29,4 @@ public class PathController {
         PathResponse response = service.getShortestPath(source, target);
         return ResponseEntity.ok().body(response);
     }
-
 }
