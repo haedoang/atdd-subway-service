@@ -442,5 +442,4 @@ Connection: keep-alive
             .then().log().all()
             .extract()
     }
- ```
 

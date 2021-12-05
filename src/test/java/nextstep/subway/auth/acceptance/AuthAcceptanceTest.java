@@ -1,5 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
+import io.restassured.RestAssured;
 import nextstep.subway.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
+
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
